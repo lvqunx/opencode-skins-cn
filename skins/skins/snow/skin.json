@@ -1,0 +1,26 @@
+{
+  "name": "snow",
+  "title": "Snowfall · 落雪星夜",
+  "description": "Twinkling stars, drifting snow and the occasional shooting star.",
+  "version": "1.0.0",
+  "base": "dark",
+  "vars": {
+    "--color-v2-text-text-base": "#eaf4ff",
+    "--color-v2-text-text-muted": "#93aecb",
+    "--color-v2-text-text-faint": "#5b7492",
+    "--color-v2-text-text-accent": "#9fd8ff",
+    "--color-v2-icon-icon-base": "#eaf4ff",
+    "--color-v2-icon-icon-accent": "#9fd8ff",
+    "--color-v2-border-border-base": "rgba(159,216,255,0.20)",
+    "--color-v2-border-border-strong": "rgba(159,216,255,0.45)",
+    "--color-v2-border-border-focus": "#9fd8ff"
+  },
+  "background": {
+    "type": "gradient",
+    "gradient": "linear-gradient(180deg,#050a16 0%,#0a1730 60%,#04070f 100%)",
+    "animate": false,
+    "surfaceAlpha": 0
+  },
+  "js": "snow.js",
+  "css": "../_lib/transparent.css"
+}

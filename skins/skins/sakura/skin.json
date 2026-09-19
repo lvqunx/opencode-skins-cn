@@ -1,0 +1,26 @@
+{
+  "name": "sakura",
+  "title": "Sakura · 樱花飘落",
+  "description": "Petal drift over a plum-dusk gradient. Pink accents, soft continuous motion.",
+  "version": "1.0.0",
+  "base": "dark",
+  "vars": {
+    "--color-v2-text-text-base": "#ffeef5",
+    "--color-v2-text-text-muted": "#d9a7bd",
+    "--color-v2-text-text-faint": "#8a6173",
+    "--color-v2-text-text-accent": "#ff9ec7",
+    "--color-v2-icon-icon-base": "#ffeef5",
+    "--color-v2-icon-icon-accent": "#ff9ec7",
+    "--color-v2-border-border-base": "rgba(255,158,199,0.22)",
+    "--color-v2-border-border-strong": "rgba(255,158,199,0.45)",
+    "--color-v2-border-border-focus": "#ff9ec7"
+  },
+  "background": {
+    "type": "gradient",
+    "gradient": "linear-gradient(160deg,#1a0d18 0%,#2b1024 45%,#160a14 100%)",
+    "animate": false,
+    "surfaceAlpha": 0
+  },
+  "js": "sakura.js",
+  "css": "../_lib/transparent.css"
+}

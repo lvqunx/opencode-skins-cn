@@ -1,0 +1,16 @@
+{
+  "name": "daylight",
+  "title": "Daylight · 浅色",
+  "description": "Light theme with frosted-glass panels over a soft pastel gradient.",
+  "version": "1.0.0",
+  "base": "light",
+  "background": {
+    "type": "gradient",
+    "gradient": "linear-gradient(160deg,#f7fbff 0%,#e9f2fd 45%,#fdf9f4 100%)",
+    "animate": false,
+    "glass": true,
+    "glassBlur": 22,
+    "glassTint": 0.06,
+    "glassSaturate": 1.15
+  }
+}

@@ -1,0 +1,24 @@
+/* transparent.css — fully see-through chrome, sharp video behind everything.
+ * Targets the app's stable data-attributes (not hashed classes). No blur, no fill.
+ * Share it from any skin with:  "css": "../_lib/transparent.css"  */
+
+/* top dock / titlebar / tab strip -> transparent, remove the band + shadow */
+[data-dock-surface='shell'],
+[data-dock-surface='tray'],
+[data-component='tabs']{
+  background-color: transparent !important;
+  box-shadow: none !important;
+  border-color: transparent !important;
+  backdrop-filter: none !important;
+  -webkit-backdrop-filter: none !important;
+}
+[data-dock-border-underlay]{ box-shadow: none !important; }
+[data-component='tabs'] [data-slot='tabs-list']:after{
+  background-color: transparent !important;
+  border-bottom-color: transparent !important;
+}
+
+/* kill any leftover frosted-glass blur from a previous skin */
+[data-oc-glass]{ backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+
+/* text shadow intentionally disabled */

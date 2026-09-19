@@ -1,0 +1,350 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>opencode-skins manager</title>
+<style>
+  :root{
+    --bg:#0d0e13; --panel:#14161f; --panel2:#1b1e2a; --line:#262a38; --line2:#333849;
+    --txt:#e9e9f2; --mut:#9aa0b4; --faint:#6b7186; --acc:#7c5cff; --acc2:#57d977;
+    --danger:#ff5c6a; --warn:#ffb454; --radius:14px;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;background:radial-gradient(1200px 700px at 80% -10%,#1a1530 0%,var(--bg) 55%);color:var(--txt);
+    font:14px/1.5 "Inter",-apple-system,"Segoe UI",system-ui,sans-serif;min-height:100vh}
+  a{color:var(--acc)}
+  header{display:flex;align-items:center;gap:14px;padding:16px 24px;border-bottom:1px solid var(--line);position:sticky;top:0;
+    background:rgba(13,14,19,.8);backdrop-filter:blur(12px);z-index:10}
+  header .logo{font-weight:700;font-size:16px;letter-spacing:.2px}
+  header .logo b{color:var(--acc)}
+  .badge{font-size:12px;padding:3px 10px;border-radius:999px;border:1px solid var(--line2);color:var(--mut)}
+  .badge.ok{color:var(--acc2);border-color:#2a6b3e;background:rgba(87,217,119,.08)}
+  .badge.no{color:var(--warn);border-color:#7a5a1e;background:rgba(255,180,84,.08)}
+  .spacer{flex:1}
+  .tabs{display:flex;gap:6px;padding:14px 24px 0}
+  .tab{padding:9px 16px;border-radius:10px 10px 0 0;color:var(--mut);cursor:pointer;font-weight:600;border:1px solid transparent;border-bottom:none}
+  .tab.active{color:var(--txt);background:var(--panel);border-color:var(--line)}
+  main{padding:22px 24px 60px;max-width:1180px;margin:0 auto}
+  h2{font-size:15px;margin:0 0 12px;color:var(--txt)}
+  .muted{color:var(--mut)} .faint{color:var(--faint);font-size:12px}
+  .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:14px;position:relative;transition:.15s}
+  .card:hover{border-color:var(--line2)}
+  .card.active{border-color:var(--acc);box-shadow:0 0 0 1px var(--acc) inset}
+  .card h3{margin:0 0 4px;font-size:14px;display:flex;align-items:center;gap:8px}
+  .pill{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--panel2);color:var(--mut);border:1px solid var(--line)}
+  .pill.acc{color:var(--acc);border-color:#3a2f6e;background:rgba(124,92,255,.1)}
+  .row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+  .row.between{justify-content:space-between}
+  button,.btn{font:inherit;font-weight:600;padding:8px 13px;border-radius:9px;border:1px solid var(--line2);background:var(--panel2);
+    color:var(--txt);cursor:pointer;transition:.12s}
+  button:hover,.btn:hover{border-color:var(--acc);background:#20223060}
+  button.pri{background:var(--acc);border-color:var(--acc);color:#fff}
+  button.pri:hover{filter:brightness(1.08)}
+  button.gho{background:transparent}
+  button.dng:hover{border-color:var(--danger);color:var(--danger)}
+  button.sm{padding:5px 9px;font-size:12px}
+  input,select,textarea{font:inherit;background:var(--panel2);border:1px solid var(--line2);color:var(--txt);border-radius:8px;padding:7px 10px}
+  input[type=range]{padding:0;accent-color:var(--acc)}
+  input[type=color]{padding:2px;width:38px;height:32px;background:none}
+  label{font-size:12px;color:var(--mut);display:block;margin:0 0 4px}
+  .field{margin:0 0 12px}
+  .panel{background:var(--panel);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin:0 0 18px}
+  .split{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:820px){.split{grid-template-columns:1fr}}
+  iframe.viewer{width:100%;height:340px;border:1px solid var(--line);border-radius:12px;background:#0a0b10}
+  .drop{border:2px dashed var(--line2);border-radius:12px;padding:26px;text-align:center;color:var(--mut);cursor:pointer;transition:.15s}
+  .drop:hover,.drop.over{border-color:var(--acc);color:var(--txt);background:rgba(124,92,255,.05)}
+  #toast{position:fixed;right:20px;bottom:20px;display:flex;flex-direction:column;gap:8px;z-index:50}
+  .toast{background:var(--panel2);border:1px solid var(--line2);border-left:3px solid var(--acc);border-radius:10px;padding:10px 14px;
+    box-shadow:0 10px 30px rgba(0,0,0,.5);animation:in .2s;max-width:340px}
+  .toast.err{border-left-color:var(--danger)} .toast.ok{border-left-color:var(--acc2)}
+  @keyframes in{from{opacity:0;transform:translateY(8px)}}
+  pre.log{background:#0a0b10;border:1px solid var(--line);border-radius:10px;padding:12px;font:12px/1.5 ui-monospace,monospace;
+    color:var(--mut);max-height:200px;overflow:auto;white-space:pre-wrap}
+  .toggle{position:relative;width:42px;height:24px;border-radius:999px;background:var(--line2);cursor:pointer;transition:.15s;flex:0 0 auto}
+  .toggle.on{background:var(--acc)}
+  .toggle b{position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;transition:.15s}
+  .toggle.on b{left:21px}
+  .kv{display:flex;gap:8px;align-items:center;margin:0 0 8px}
+  .kv label{margin:0;min-width:110px}
+</style>
+</head>
+<body>
+<header>
+  <span class="logo">✨ opencode-<b>skins</b> <span class="faint">manager</span></span>
+  <span id="patchBadge" class="badge">…</span>
+  <span class="spacer"></span>
+  <button class="sm gho" onclick="openFolder('skins')">📂 皮肤目录</button>
+  <button class="sm gho" onclick="load()">↻ 刷新</button>
+</header>
+<div class="tabs" id="tabs"></div>
+<main id="view"></main>
+<div id="toast"></div>
+
+<script>
+const $=(s,e=document)=>e.querySelector(s), $$=(s,e=document)=>[...e.querySelectorAll(s)];
+const esc=(s)=>String(s??"").replace(/[&<>"]/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]));
+let STATE=null, TAB="skins", editing=null;
+
+async function api(path,opts){ const r=await fetch("/api"+path,opts); const t=await r.text(); let j; try{j=JSON.parse(t)}catch{j={raw:t}} if(!r.ok) throw new Error(j.error||r.status); return j; }
+function toast(msg,kind){ const d=document.createElement("div"); d.className="toast "+(kind||""); d.textContent=msg; $("#toast").appendChild(d); setTimeout(()=>d.remove(),3600); }
+const debounce=(fn,ms=350)=>{let t;return(...a)=>{clearTimeout(t);t=setTimeout(()=>fn(...a),ms)}};
+
+async function load(){ try{ STATE=await api("/state"); paintStatus(); renderTabs(); render(); }catch(e){ toast("加载失败: "+e.message,"err"); } }
+function paintStatus(){ const b=$("#patchBadge"); const s=STATE.status;
+  if(!s.asar){ b.className="badge no"; b.textContent="未找到 app.asar"; }
+  else if(s.patched){ b.className="badge ok"; b.textContent="● 已注入 (patched)"; }
+  else { b.className="badge no"; b.textContent="○ 未注入 — 需安装"; } }
+function renderTabs(){ const t=[["skins","🎨 皮肤"],["pet","🐾 宠物"],["live2d","🎎 Live2D"],["gateway","🌐 网关"],["settings","⚙️ 设置"]];
+  $("#tabs").innerHTML=t.map(([k,l])=>`<div class="tab ${k===TAB?'active':''}" onclick="go('${k}')">${l}</div>`).join(""); }
+function go(t){ TAB=t; editing=null; renderTabs(); render(); }
+function render(){ ({skins:renderSkins,pet:renderPet,live2d:renderLive2D,gateway:renderGateway,settings:renderSettings}[TAB])(); }
+
+/* ---------- SKINS ---------- */
+function renderSkins(){
+  const active=STATE.active.active;
+  const cards=STATE.skins.map(s=>{
+    const bg=(s.manifest.background||{}).type||"none";
+    return `<div class="card ${s.name===active?'active':''}">
+      <h3>${esc(s.manifest.title||s.name)} ${s.name===active?'<span class="pill acc">当前</span>':''}</h3>
+      <div class="faint">${esc(s.name)} · bg:${esc(bg)}</div>
+      <div class="row" style="margin-top:12px">
+        <button class="sm pri" onclick="activate('${esc(s.name)}')">启用</button>
+        <button class="sm" onclick="editSkin('${esc(s.name)}')">编辑</button>
+        ${s.name.startsWith("_")?"":`<button class="sm dng gho" onclick="delSkin('${esc(s.name)}')">删除</button>`}
+      </div></div>`;
+  }).join("");
+  $("#view").innerHTML=`<div class="row between"><h2>皮肤 (${STATE.skins.length})</h2>
+    <button class="sm" onclick="newSkin()">＋ 新建皮肤</button></div>
+    <div class="grid">${cards||'<div class="muted">没有皮肤</div>'}</div>
+    <div id="editor"></div>`;
+  if(editing) drawEditor();
+}
+async function activate(name){ await api("/active",{method:"PUT",headers:H,body:JSON.stringify({active:name})}); STATE.active.active=name; toast("已启用 "+name+"（OpenCode 开着会热更新）","ok"); render(); }
+async function delSkin(name){ if(!confirm("删除皮肤 "+name+"？"))return; await api("/skins/"+name,{method:"DELETE"}); toast("已删除","ok"); load(); }
+async function newSkin(){ const name=prompt("新皮肤名字（英文）:"); if(!name)return; const j=await api("/skins",{method:"POST",headers:H,body:JSON.stringify({name,manifest:{name,title:name,base:"dark",vars:{},background:{type:"gradient",gradient:"linear-gradient(135deg,#12203a,#0a0713)",surfaceAlpha:.5}}})}); toast("已创建 "+j.name,"ok"); await load(); editSkin(j.name); }
+function editSkin(name){ editing=STATE.skins.find(s=>s.name===name); render(); $("#editor")?.scrollIntoView({behavior:"smooth"}); }
+const H={"Content-Type":"application/json"};
+const saveSkin=debounce(async()=>{ await api("/skins/"+editing.name,{method:"PUT",headers:H,body:JSON.stringify(editing.manifest)}); toast("已保存 "+editing.name); });
+function setM(path,val){ const m=editing.manifest; const ks=path.split("."); let o=m; for(let i=0;i<ks.length-1;i++){o[ks[i]]=o[ks[i]]||{};o=o[ks[i]];} o[ks.at(-1)]=val; saveSkin(); if(TAB==="skins")drawEditor(); }
+function drawEditor(){
+  const m=editing.manifest, bg=m.background||(m.background={type:"none"});
+  const vars=m.vars||(m.vars={});
+  const colorField=(key,label)=>{ const v=vars[key]||"#000000"; const hex=/^#([0-9a-f]{6})/i.test(v)?v:"#888888";
+    return `<div class="kv"><label>${label}</label><input type="color" value="${hex}" oninput="setM('vars.${key}',this.value)"><input style="flex:1" value="${esc(v)}" onchange="setM('vars.${key}',this.value)"></div>`; };
+  $("#editor").innerHTML=`<div class="panel" style="margin-top:18px">
+    <div class="row between"><h2>编辑：${esc(m.title||editing.name)}</h2><button class="sm gho" onclick="editing=null;render()">收起</button></div>
+    <div class="split">
+     <div>
+      <div class="field"><label>标题</label><input style="width:100%" value="${esc(m.title||"")}" onchange="setM('title',this.value)"></div>
+      <div class="field"><label>色彩模式 base</label><select onchange="setM('base',this.value)">
+        <option ${m.base==="dark"?"selected":""}>dark</option><option ${m.base==="light"?"selected":""}>light</option></select></div>
+      <div class="field"><label>背景类型</label><select onchange="setM('background.type',this.value)">
+        ${["none","video","image","shader","gradient"].map(t=>`<option ${bg.type===t?"selected":""}>${t}</option>`).join("")}</select></div>
+      ${bg.type==="shader"?`<div class="field"><label>Shader</label><select onchange="setM('background.shader',this.value)">
+        ${["aurora","mesh","waves","stars"].map(t=>`<option ${bg.shader===t?"selected":""}>${t}</option>`).join("")}</select></div>`:""}
+      ${bg.type==="video"||bg.type==="image"?`<div class="field"><label>素材路径 src（相对皮肤目录，如 assets/clip.mp4）</label>
+        <input style="width:100%" value="${esc(bg.src||"")}" onchange="setM('background.src',this.value)"></div>`:""}
+     </div>
+     <div>
+      ${bg.type!=="none"?`
+      <div class="field"><label>遮罩浓度 surfaceAlpha: <b>${bg.surfaceAlpha??0.6}</b>（0=全透明玻璃感 · 越大越实）</label>
+        <input type="range" min="0" max="1" step="0.02" value="${bg.surfaceAlpha??0.6}" style="width:100%"
+          oninput="setM('background.surfaceAlpha',+this.value)"></div>
+      <div class="field"><label>模糊 blur: <b>${bg.blur??0}</b></label>
+        <input type="range" min="0" max="20" step="1" value="${bg.blur??0}" style="width:100%" oninput="setM('background.blur',+this.value)"></div>
+      <div class="field"><label>亮度 brightness: <b>${bg.brightness??1}</b></label>
+        <input type="range" min="0.2" max="1.4" step="0.02" value="${bg.brightness??1}" style="width:100%" oninput="setM('background.brightness',+this.value)"></div>`:""}
+      <div class="field"><label>快捷 CSS 复用</label><select onchange="setM('css',this.value||undefined)">
+        <option value="">（无）</option><option value="../_lib/transparent.css" ${m.css==="../_lib/transparent.css"?"selected":""}>完全透明 _lib/transparent.css</option></select></div>
+     </div>
+    </div>
+    <h2 style="margin-top:8px">主色 tokens</h2>
+    <div class="split"><div>
+      ${colorField("--color-v2-text-text-base","文字主色")}
+      ${colorField("--color-v2-text-text-accent","强调文字")}
+    </div><div>
+      ${colorField("--color-v2-background-bg-accent","强调背景")}
+      ${colorField("--color-v2-border-border-base","边框")}
+    </div></div>
+    <div class="row" style="margin-top:8px"><button class="sm pri" onclick="activate('${esc(editing.name)}')">启用此皮肤</button>
+      <span class="faint">改动即时保存并写入文件</span></div>
+  </div>`;
+}
+
+/* ---------- PET ---------- */
+function renderPet(){
+  const raw=STATE.active.pet; const on=raw!==false && raw!=null;
+  const cfg=(raw&&typeof raw==="object")?raw:{};
+  const models=STATE.models.filter(m=>m.model3);
+  const cur=cfg.model||"";
+  $("#view").innerHTML=`<div class="row between"><h2>🐾 宠物</h2>
+    <div class="row"><span class="muted">启用</span><div class="toggle ${on?'on':''}" onclick="togglePet(${!on})"><b></b></div></div></div>
+   <div class="split">
+    <div class="panel">
+      <div class="field"><label>Live2D 模型（不选则为程序化 blob）</label>
+        <select id="petModel" onchange="setPet('model',this.value||undefined)">
+          <option value="">— blob（无模型）—</option>
+          ${models.map(m=>`<option value="${esc(m.model3)}" ${cur===m.model3?"selected":""}>${esc(m.name)}</option>`).join("")}
+        </select></div>
+      <div class="field"><label>名字</label><input style="width:100%" value="${esc(cfg.name||"Codi")}" onchange="setPet('name',this.value)"></div>
+      <div class="split">
+       <div class="field"><label>宽 width</label><input type="number" value="${cfg.width||220}" onchange="setPet('width',+this.value)"></div>
+       <div class="field"><label>高 height</label><input type="number" value="${cfg.height||300}" onchange="setPet('height',+this.value)"></div>
+      </div>
+      <div class="kv"><label>口型 lipSync</label><div class="toggle ${cfg.lipSync?'on':''}" onclick="setPet('lipSync',${!cfg.lipSync})"><b></b></div></div>
+      <div class="kv"><label>台词 quips</label><div class="toggle ${cfg.quips!==false?'on':''}" onclick="setPet('quips',${cfg.quips===false})"><b></b></div></div>
+      <div class="field"><label>发呆多久睡觉 sleepAfter（秒）</label><input type="number" value="${cfg.sleepAfter||60}" onchange="setPet('sleepAfter',+this.value)"></div>
+      <p class="faint">改宠物模型/大小需要重启 OpenCode 生效。</p>
+    </div>
+    <div class="panel">
+      <h2>预览</h2>
+      ${cur?`<iframe class="viewer" src="/viewer?model=${encodeURIComponent(cur)}&bg=1"></iframe>`:'<div class="drop" onclick="go(\'live2d\')">这是 blob 宠物（无模型）。<br>去 Live2D 选一个模型 →</div>'}
+    </div>
+   </div>`;
+}
+async function togglePet(on){ await api("/active",{method:"PUT",headers:H,body:JSON.stringify({pet:on?(typeof STATE.active.pet==="object"?STATE.active.pet:{}):false})}); toast(on?"已启用宠物":"已关闭宠物","ok"); await load(); }
+async function setPet(key,val){ const cfg=(typeof STATE.active.pet==="object"&&STATE.active.pet)?{...STATE.active.pet}:{}; if(val===undefined)delete cfg[key];else cfg[key]=val; await api("/active",{method:"PUT",headers:H,body:JSON.stringify({pet:cfg})}); STATE.active.pet=cfg; toast("已保存宠物设置"); if(key==="model")renderPet(); }
+
+/* ---------- LIVE2D ---------- */
+function renderLive2D(){
+  if(!STATE.hasVendor){ $("#view").innerHTML=`<h2>🎎 Live2D</h2>
+    <div class="panel"><p>还没安装 Live2D 运行时（Cubism Core + PIXI）。</p>
+    <button class="pri" onclick="setupLive2D(this)">下载运行时库</button></div>`; return; }
+  const cards=STATE.models.map(m=>`<div class="card">
+    <h3>🎎 ${esc(m.name)}</h3><div class="faint">${m.files} 个文件 ${m.model3?"":"· ⚠ 无 model3.json"}</div>
+    <div class="row" style="margin-top:10px">
+      ${m.model3?`<button class="sm" onclick="preview('${encodeURIComponent(m.model3)}','${esc(m.name)}')">预览</button>
+      <button class="sm pri" onclick="assignModel('${esc(m.model3)}')">设为宠物</button>`:""}
+      <button class="sm dng gho" onclick="delModel('${esc(m.name)}')">删除</button>
+    </div></div>`).join("");
+  $("#view").innerHTML=`<div class="row between"><h2>🎎 Live2D 模型 (${STATE.models.length})</h2></div>
+   <div class="split">
+    <div class="panel">
+      <h2>上传你的模型</h2>
+      <div id="drop" class="drop" onclick="$('#dir').click()">📁 点击选择模型<b>文件夹</b>，或把文件夹拖进来<br>
+        <span class="faint">需包含 .model3.json + .moc3 + 贴图</span></div>
+      <input id="dir" type="file" webkitdirectory multiple style="display:none" onchange="uploadFolder(this.files)">
+      <h2 style="margin-top:18px">一键导入（在线免费模型 · Cubism 4）</h2>
+      <div class="row">${STATE.curated.map(c=>`<button class="sm" onclick="importUrl('${c.url}','${c.name}',this)">${esc(c.label)}</button>`).join("")}</div>
+      <div class="field" style="margin-top:14px"><label>或粘贴任意 model3.json 链接</label>
+        <div class="row"><input id="impUrl" style="flex:1" placeholder="https://…/xxx.model3.json">
+        <input id="impName" style="width:120px" placeholder="名字"><button class="pri sm" onclick="importUrl($('#impUrl').value,$('#impName').value,this)">导入</button></div></div>
+      <pre class="log" id="impLog" style="display:none"></pre>
+    </div>
+    <div class="panel">
+      <h2>预览 <span id="prevName" class="faint"></span></h2>
+      <iframe id="prev" class="viewer" src="about:blank"></iframe>
+      <div class="grid" style="grid-template-columns:repeat(auto-fill,minmax(150px,1fr));margin-top:12px">${cards||'<div class="muted">还没有模型</div>'}</div>
+    </div>
+   </div>`;
+  const d=$("#drop"); ["dragover","dragleave","drop"].forEach(ev=>d.addEventListener(ev,e=>{e.preventDefault();d.classList.toggle("over",ev==="dragover");
+    if(ev==="drop")onDrop(e.dataTransfer);}));
+}
+function preview(enc,name){ $("#prev").src="/viewer?model="+enc+"&bg=1"; $("#prevName").textContent=name; }
+async function setupLive2D(btn){ btn.disabled=true;btn.textContent="下载中…"; try{ await api("/live2d/setup",{method:"POST",headers:H,body:"{}"}); toast("运行时已安装","ok"); load(); }catch(e){ toast(e.message,"err"); btn.disabled=false; } }
+async function assignModel(model3){ await setPet("model",model3); toast("已设为宠物模型（重启 OpenCode 生效）","ok"); }
+async function delModel(name){ if(!confirm("删除模型 "+name+"？"))return; await api("/models/"+name,{method:"DELETE"}); toast("已删除","ok"); load(); }
+async function importUrl(url,name,btn){ if(!url){toast("请填链接","err");return;} const log=$("#impLog"); log.style.display="block"; log.textContent="导入中…";
+  if(btn){btn.disabled=true;} try{ const j=await api("/models/import",{method:"POST",headers:H,body:JSON.stringify({url,name:name||url.split("/").slice(-2)[0]})});
+    log.textContent=j.log||"完成"; toast(j.ok?"导入成功":"导入失败,看日志",j.ok?"ok":"err"); await load(); }catch(e){ log.textContent=e.message; toast("失败: "+e.message,"err"); } if(btn)btn.disabled=false; }
+async function uploadFolder(files){ if(!files||!files.length)return; const list=[...files]; const top=list[0].webkitRelativePath.split("/")[0]; const name=prompt("模型名字:",top)||top;
+  let ok=0; toast("上传 "+list.length+" 个文件…"); for(const f of list){ const rel=f.webkitRelativePath.split("/").slice(1).join("/"); if(!rel)continue;
+    try{ await fetch("/api/models/"+encodeURIComponent(name)+"/file",{method:"POST",headers:{"x-rel-path":rel},body:await f.arrayBuffer()}); ok++; }catch(e){} }
+  toast("上传完成 "+ok+"/"+list.length,"ok"); await load(); }
+async function onDrop(dt){ const files=[]; const items=[...dt.items].map(i=>i.webkitGetAsEntry&&i.webkitGetAsEntry()).filter(Boolean);
+  async function walk(entry,path){ if(entry.isFile){ await new Promise(r=>entry.file(f=>{f._rel=path+entry.name;files.push(f);r();})); }
+    else if(entry.isDirectory){ const rd=entry.createReader(); const es=await new Promise(r=>rd.readEntries(r)); for(const e of es)await walk(e,path+entry.name+"/"); } }
+  for(const it of items)await walk(it,""); if(!files.length){toast("请拖入包含模型的文件夹","err");return;}
+  const top=files[0]._rel.split("/")[0]; const name=prompt("模型名字:",top)||top; let ok=0;
+  for(const f of files){ const rel=f._rel.split("/").slice(1).join("/"); if(!rel)continue;
+    try{ await fetch("/api/models/"+encodeURIComponent(name)+"/file",{method:"POST",headers:{"x-rel-path":rel},body:await f.arrayBuffer()}); ok++;}catch(e){} }
+  toast("上传完成 "+ok+"/"+files.length,"ok"); await load(); }
+
+/* ---------- SETTINGS ---------- */
+function renderSettings(){
+  const a=STATE.active, s=STATE.status;
+  $("#view").innerHTML=`<h2>⚙️ 设置</h2>
+   <div class="panel">
+     <div class="kv"><label>热键 hotkeys</label><div class="toggle ${a.hotkeys!==false?'on':''}" onclick="setActive('hotkeys',${a.hotkeys===false})"><b></b></div>
+       <span class="faint">Ctrl+Alt+S 切皮肤 · R 重贴 · 0 关</span></div>
+     <div class="kv"><label>热重载 hotReload</label><div class="toggle ${a.hotReload!==false?'on':''}" onclick="setActive('hotReload',${a.hotReload===false})"><b></b></div>
+       <span class="faint">存盘后 ~1.5s 自动生效</span></div>
+     <div class="kv"><label>默认皮肤</label><select onchange="setActive('active',this.value)">
+       ${STATE.skins.map(x=>`<option ${a.active===x.name?"selected":""}>${esc(x.name)}</option>`).join("")}</select></div>
+   </div>
+   <div class="panel">
+     <h2>安装 / 补丁</h2>
+     <p class="muted">补丁状态：${s.patched?'<b style="color:var(--acc2)">已注入</b>':'<b style="color:var(--warn)">未注入</b>'} · app.asar：${s.asar?"找到":"缺失"}</p>
+     <div class="row">
+       <button class="pri" onclick="doInstall('install',this)">${s.patched?"重新注入":"安装 / 注入补丁"}</button>
+       <button class="dng gho" onclick="doInstall('uninstall',this)">卸载补丁</button>
+       <button class="gho" onclick="openFolder('skins')">📂 打开皮肤目录</button>
+     </div>
+     <p class="faint" style="margin-top:8px">应用更新/重装后补丁会丢,重跑一次即可恢复(皮肤不受影响)。安装/卸载前请先关闭 OpenCode。</p>
+     <pre class="log" id="instLog" style="display:none"></pre>
+   </div>
+   <p class="faint">skins: ${esc(STATE.skinsDir)}</p>`;
+}
+async function setActive(key,val){ await api("/active",{method:"PUT",headers:H,body:JSON.stringify({[key]:val})}); STATE.active[key]=val; toast("已保存"); renderSettings(); }
+async function doInstall(cmd,btn){ btn.disabled=true; const log=$("#instLog"); log.style.display="block"; log.textContent=cmd+"…";
+  try{ const j=await api("/install",{method:"POST",headers:H,body:JSON.stringify({cmd})}); log.textContent=j.log; toast(j.ok?"完成":"失败,看日志",j.ok?"ok":"err"); await load(); }catch(e){ log.textContent=e.message; toast(e.message,"err"); } btn.disabled=false; }
+async function openFolder(t){ try{await api("/open",{method:"POST",headers:H,body:JSON.stringify({target:t})});}catch(e){} }
+
+/* ---------- GATEWAY (OpenAI-compatible reverse-proxy of zen free models) ---------- */
+function copyTxt(t){ (navigator.clipboard?navigator.clipboard.writeText(t):Promise.reject()).then(()=>toast("已复制","ok")).catch(()=>toast("复制失败,手动选中","err")); }
+async function renderGateway(){
+  const base=location.origin+"/gw/v1";
+  const gwKey=(STATE.active.gateway&&STATE.active.gateway.key)||"";
+  $("#view").innerHTML=`<h2>🌐 免费模型网关 <span class="pill acc">OpenAI 兼容</span></h2>
+   <div class="panel">
+     <p class="muted">把任意 OpenAI 兼容客户端指向下面的地址,即可直接用 opencode zen 的免费模型(本机反代,免 token)。</p>
+     <div class="kv"><label>Base URL</label><input id="gwbase" style="flex:1" readonly value="${base}"><button class="sm pri" onclick="copyTxt('${base}')">复制</button></div>
+     <div class="kv"><label>API Key</label><input style="flex:1" readonly value="${gwKey?'(已设本地 key)':'任意字符串即可'}">
+       <button class="sm" onclick="setGwKey()">${gwKey?'改/清 key':'设本地 key'}</button></div>
+     <p class="faint">仅监听 127.0.0.1(本机)。设了 key 后请求需带 Authorization: Bearer &lt;key&gt;。</p>
+   </div>
+   <div class="split">
+     <div class="panel"><h2>免费模型 <span id="gwcount" class="faint"></span></h2><div id="gwmodels" class="muted">加载中…</div></div>
+     <div class="panel"><h2>快速测试</h2>
+       <div class="field"><label>模型</label><select id="gwtestmodel"></select></div>
+       <div class="field"><label>Prompt</label><input id="gwprompt" style="width:100%" value="用一句话介绍你自己"></div>
+       <button class="pri sm" onclick="gwTest(this)">发送</button>
+       <pre class="log" id="gwout" style="display:none;margin-top:10px"></pre>
+     </div>
+   </div>
+   <div class="panel"><h2>用法示例</h2>
+     <pre class="log" style="max-height:none">curl ${base}/chat/completions \\
+  -H "Content-Type: application/json" \\
+  -d '{"model":"nemotron-3-ultra-free","messages":[{"role":"user","content":"hi"}]}'
+
+# OpenAI SDK (python)
+from openai import OpenAI
+client = OpenAI(base_url="${base}", api_key="${gwKey||'x'}")
+client.chat.completions.create(model="nemotron-3-ultra-free",
+    messages=[{"role":"user","content":"hi"}])</pre></div>`;
+  try{
+    const hh=gwKey?{Authorization:"Bearer "+gwKey}:{};
+    const j=await (await fetch(base+"/models",{headers:hh})).json();
+    const ids=(j.data||[]).map(m=>m.id);
+    $("#gwcount").textContent="("+ids.length+")";
+    $("#gwmodels").innerHTML=ids.map(id=>`<div class="kv" style="margin:5px 0"><code style="flex:1;color:var(--acc2)">${esc(id)}</code><button class="sm gho" onclick="copyTxt('${esc(id)}')">复制</button></div>`).join("")||"（无）";
+    $("#gwtestmodel").innerHTML=ids.map(id=>`<option>${esc(id)}</option>`).join("");
+  }catch(e){ $("#gwmodels").innerHTML='<span class="muted">加载失败: '+esc(e.message)+'</span>'; }
+}
+async function setGwKey(){ const k=prompt("本地网关 API key（留空=不校验）:", (STATE.active.gateway&&STATE.active.gateway.key)||""); if(k===null)return;
+  await api("/active",{method:"PUT",headers:H,body:JSON.stringify({gateway:{key:k}})}); STATE.active.gateway={key:k}; toast(k?"已设 key":"已清除 key","ok"); renderGateway(); }
+async function gwTest(btn){ const model=$("#gwtestmodel").value, prompt=$("#gwprompt").value, out=$("#gwout"); if(!model)return;
+  out.style.display="block"; out.textContent="请求中…"; btn.disabled=true;
+  try{ const gwKey=(STATE.active.gateway&&STATE.active.gateway.key)||"";
+    const r=await fetch(location.origin+"/gw/v1/chat/completions",{method:"POST",headers:{...H,...(gwKey?{Authorization:"Bearer "+gwKey}:{})},body:JSON.stringify({model,messages:[{role:"user",content:prompt}],max_tokens:300})});
+    const j=await r.json();
+    out.textContent=(j.choices&&j.choices[0]&&j.choices[0].message&&j.choices[0].message.content)||JSON.stringify(j,null,2);
+  }catch(e){ out.textContent="失败: "+e.message; } btn.disabled=false; }
+
+load();
+</script>
+</body>
+</html>

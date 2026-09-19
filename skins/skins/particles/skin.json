@@ -1,0 +1,26 @@
+{
+  "name": "particles",
+  "title": "Particle Net · 粒子星链",
+  "description": "Three.js particle network with mouse interaction (repel, highlight, parallax) — ported from the H3 Studio web UI.",
+  "version": "1.0.0",
+  "base": "dark",
+  "vars": {
+    "--color-v2-text-text-base": "#e6f2ff",
+    "--color-v2-text-text-muted": "#7f9cb8",
+    "--color-v2-text-text-faint": "#4b6478",
+    "--color-v2-text-text-accent": "#37e6ff",
+    "--color-v2-icon-icon-base": "#e6f2ff",
+    "--color-v2-icon-icon-accent": "#37e6ff",
+    "--color-v2-border-border-base": "rgba(55,230,255,0.20)",
+    "--color-v2-border-border-strong": "rgba(139,123,255,0.45)",
+    "--color-v2-border-border-focus": "#37e6ff"
+  },
+  "background": {
+    "type": "gradient",
+    "gradient": "linear-gradient(180deg,#03070f 0%,#061224 55%,#02050a 100%)",
+    "animate": false,
+    "surfaceAlpha": 0
+  },
+  "js": "particles.js",
+  "css": "../_lib/transparent.css"
+}

@@ -1,0 +1,26 @@
+{
+  "name": "matrix",
+  "title": "Matrix · 数字雨",
+  "description": "Falling katakana rain on near-black. Terminal green accents.",
+  "version": "1.0.0",
+  "base": "dark",
+  "vars": {
+    "--color-v2-text-text-base": "#d9ffe6",
+    "--color-v2-text-text-muted": "#5fbf8a",
+    "--color-v2-text-text-faint": "#2e7a54",
+    "--color-v2-text-text-accent": "#3bff9e",
+    "--color-v2-icon-icon-base": "#d9ffe6",
+    "--color-v2-icon-icon-accent": "#3bff9e",
+    "--color-v2-border-border-base": "rgba(59,255,158,0.20)",
+    "--color-v2-border-border-strong": "rgba(59,255,158,0.45)",
+    "--color-v2-border-border-focus": "#3bff9e"
+  },
+  "background": {
+    "type": "gradient",
+    "gradient": "linear-gradient(180deg,#010403 0%,#03110a 60%,#010403 100%)",
+    "animate": false,
+    "surfaceAlpha": 0
+  },
+  "js": "matrix.js",
+  "css": "../_lib/transparent.css"
+}

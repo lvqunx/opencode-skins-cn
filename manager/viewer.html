@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="zh">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Live2D viewer</title>
+<style>
+  html,body{margin:0;height:100%;overflow:hidden;background:#0a0b10;font:13px/1.4 "Inter",system-ui,sans-serif;color:#cbd0e0}
+  body.bg{background:radial-gradient(700px 500px at 50% 0,#1a2540,#0a0b10 70%)}
+  #stage{position:absolute;inset:0}
+  #ui{position:absolute;left:10px;top:10px;right:10px;display:flex;gap:6px;flex-wrap:wrap;z-index:5;max-height:46%;overflow:auto}
+  #ui b{width:100%;color:#8a90a6;font-size:11px;margin:2px 0 -2px}
+  button{font:inherit;font-size:12px;padding:5px 9px;border-radius:8px;border:1px solid #333849;background:#1b1e2a;color:#e9e9f2;cursor:pointer}
+  button:hover{border-color:#7c5cff}
+  #err{position:absolute;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:24px;color:#ff9aa6}
+  #hint{position:absolute;left:0;right:0;bottom:8px;text-align:center;color:#5b6178;font-size:11px}
+</style>
+</head>
+<body>
+<canvas id="stage"></canvas>
+<div id="ui"></div>
+<div id="err"></div>
+<div id="hint">移动鼠标 = 视线跟随 · 点击 = Tap</div>
+<script>
+const qs=new URLSearchParams(location.search);
+if(qs.get("bg"))document.body.classList.add("bg");
+const MODEL="/skins/"+(qs.get("model")||"").replace(/^\/+/,"");
+const V="/skins/pet/live2d/vendor/";
+function load(src){return new Promise((res,rej)=>{const s=document.createElement("script");s.src=src;s.async=false;s.onload=res;s.onerror=()=>rej(new Error("load "+src));document.head.appendChild(s);});}
+function fail(m){const e=document.getElementById("err");e.style.display="flex";e.textContent="加载失败: "+m;}
+
+(async()=>{
+  try{
+    if(!qs.get("model")){fail("未指定模型");return;}
+    await load(V+"live2dcubismcore.min.js");
+    await load(V+"pixi.min.js");
+    await load(V+"cubism4.min.js");
+    if(!(window.PIXI&&PIXI.live2d))return fail("运行时未就绪(PIXI.live2d)");
+    const canvas=document.getElementById("stage");
+    const app=new PIXI.Application({view:canvas,resizeTo:window,backgroundAlpha:0,antialias:true,autoDensity:true,resolution:Math.min(devicePixelRatio||1,2)});
+    const model=await PIXI.live2d.Live2DModel.from(MODEL,{autoInteract:false});
+    app.stage.addChild(model);
+    function fit(){const pad=0.86;const s=Math.min(app.renderer.width/model.width,app.renderer.height/model.height)*pad/(app.renderer.resolution);
+      model.scale.set(s);model.anchor.set(0.5,0.5);model.position.set(window.innerWidth/2,window.innerHeight/2);}
+    fit();window.addEventListener("resize",fit);
+    window.addEventListener("pointermove",e=>{try{model.focus(e.clientX,e.clientY);}catch(_){}} );
+    window.addEventListener("pointerdown",e=>{try{const hit=model.hitTest(e.clientX,e.clientY)||[];const g=hit[0];model.motion(g&&/body/i.test(g)?"Tap":"Tap");}catch(_){}} );
+    // expression / motion buttons
+    const st=model.internalModel.settings||{};
+    const ui=document.getElementById("ui");
+    const exps=(st.expressions||[]).map(e=>e.Name||e.name||e.File).filter(Boolean);
+    const mots=Object.keys(st.motions||{});
+    if(exps.length){ui.insertAdjacentHTML("beforeend","<b>表情</b>");exps.forEach(n=>{const b=document.createElement("button");b.textContent=n;b.onclick=()=>{try{model.expression(n)}catch(_){}} ;ui.appendChild(b);});}
+    if(mots.length){ui.insertAdjacentHTML("beforeend","<b>动作</b>");mots.forEach(g=>{const b=document.createElement("button");b.textContent=g;b.onclick=()=>{try{model.motion(g)}catch(_){}} ;ui.appendChild(b);});}
+  }catch(e){fail(e&&e.message||String(e));}
+})();
+</script>
+</body>
+</html>

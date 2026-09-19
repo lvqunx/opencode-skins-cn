@@ -1,0 +1,26 @@
+{
+  "name": "synth",
+  "title": "Synthwave · 霓虹网格",
+  "description": "Retro sun and a moving perspective grid. Magenta and cyan neon accents.",
+  "version": "1.0.0",
+  "base": "dark",
+  "vars": {
+    "--color-v2-text-text-base": "#f3e9ff",
+    "--color-v2-text-text-muted": "#a98fd6",
+    "--color-v2-text-text-faint": "#6b5a91",
+    "--color-v2-text-text-accent": "#ff5ce1",
+    "--color-v2-icon-icon-base": "#f3e9ff",
+    "--color-v2-icon-icon-accent": "#39e6ff",
+    "--color-v2-border-border-base": "rgba(255,92,225,0.24)",
+    "--color-v2-border-border-strong": "rgba(57,230,255,0.5)",
+    "--color-v2-border-border-focus": "#39e6ff"
+  },
+  "background": {
+    "type": "gradient",
+    "gradient": "linear-gradient(180deg,#0b0620 0%,#1a0b33 55%,#050310 100%)",
+    "animate": false,
+    "surfaceAlpha": 0
+  },
+  "js": "synth.js",
+  "css": "../_lib/transparent.css"
+}

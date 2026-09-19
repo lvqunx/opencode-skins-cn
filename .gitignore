@@ -1,0 +1,34 @@
+# OS / editor
+.DS_Store
+Thumbs.db
+*.log
+*.swp
+.idea/
+.vscode/
+node_modules/
+
+# user-dropped background media — keep the repo light
+skins/skins/*/assets/*.mp4
+skins/skins/*/assets/*.webm
+skins/skins/*/assets/*.mov
+skins/skins/*/assets/*.ogg
+skins/skins/*/assets/*.gif
+!skins/skins/*/assets/README.txt
+
+# local asar backups (never commit binaries)
+*.asar
+*.asar.ocskin-bak
+
+# Live2D runtime libs (proprietary Cubism Core) + models — fetched locally
+skins/pet/live2d/vendor/
+skins/pet/live2d/model/
+
+# Rust / Tauri build artifacts
+target/
+manager-tauri/**/target/
+manager-tauri/src-tauri/gen/
+
+# local helpers (machine-specific)
+install.ps1
+*.cmd
+

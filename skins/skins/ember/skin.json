@@ -1,0 +1,26 @@
+{
+  "name": "ember",
+  "title": "Ember · 篝火余烬",
+  "description": "Rising embers and a breathing warm glow. Amber accents.",
+  "version": "1.0.0",
+  "base": "dark",
+  "vars": {
+    "--color-v2-text-text-base": "#ffe9d6",
+    "--color-v2-text-text-muted": "#c49a7a",
+    "--color-v2-text-text-faint": "#7d6150",
+    "--color-v2-text-text-accent": "#ffb454",
+    "--color-v2-icon-icon-base": "#ffe9d6",
+    "--color-v2-icon-icon-accent": "#ffb454",
+    "--color-v2-border-border-base": "rgba(255,180,84,0.20)",
+    "--color-v2-border-border-strong": "rgba(255,180,84,0.45)",
+    "--color-v2-border-border-focus": "#ffb454"
+  },
+  "background": {
+    "type": "gradient",
+    "gradient": "linear-gradient(180deg,#150a05 0%,#241008 55%,#0d0503 100%)",
+    "animate": false,
+    "surfaceAlpha": 0
+  },
+  "js": "ember.js",
+  "css": "../_lib/transparent.css"
+}
