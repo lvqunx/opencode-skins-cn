@@ -179,17 +179,38 @@
     document.head.appendChild(extra);
   } catch (e) {}
 
-  // keep native window-control buttons (min/max/close) in sync with the skin's
-  // color scheme — the main process only knows the app's own theme otherwise
+  // enforce the active skin's color scheme + native window-control colors.
+  // The app re-applies its own theme shortly after startup, flipping
+  // data-color-scheme back (and painting black window buttons over dark skins).
   try {
-    var syncTitlebar = function () {
-      var scheme = document.documentElement.dataset.colorScheme || "";
-      if (scheme !== "dark" && scheme !== "light") return;
+    var lastTb = "";
+    var enforceScheme = function () {
+      var base = "";
       try {
-        if (window.api && window.api.setTitlebar) window.api.setTitlebar({ mode: scheme, scheme: scheme });
+        var api = window.ocskin;
+        var m = api && api.manifest ? api.manifest() : null;
+        if (api && api.current && api.current() && m && (m.base === "dark" || m.base === "light")) base = m.base;
+      } catch (e4) {}
+      if (!base) return;
+      var root = document.documentElement;
+      if (root.dataset.colorScheme !== base) root.dataset.colorScheme = base;
+      if (root.style.colorScheme !== base) root.style.colorScheme = base;
+      if (base !== lastTb) {
+        lastTb = base;
+        try { console.log("%c[ocskin-tb]", "color:#37e6ff;font-weight:bold", "enforce", base); } catch (e3) {}
+      }
+      try {
+        if (window.api && window.api.setTitlebar) window.api.setTitlebar({ mode: base, scheme: base });
       } catch (e2) {}
     };
-    new MutationObserver(syncTitlebar).observe(document.documentElement, { attributes: true, attributeFilter: ["data-color-scheme"] });
-    syncTitlebar();
+    new MutationObserver(enforceScheme).observe(document.documentElement, { attributes: true, attributeFilter: ["data-color-scheme"] });
+    enforceScheme();
+    setTimeout(enforceScheme, 500);
+    setTimeout(enforceScheme, 1500);
+    setTimeout(enforceScheme, 4000);
+    setInterval(enforceScheme, 5000);
+    if (window.ocskin && window.ocskin.on) {
+      try { window.ocskin.on("applied", function () { setTimeout(enforceScheme, 60); }); } catch (e5) {}
+    }
   } catch (e) {}
 })();
