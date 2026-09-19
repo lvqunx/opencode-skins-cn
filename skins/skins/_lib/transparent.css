@@ -346,3 +346,12 @@ html{
 [data-action="prompt-submit"]:not(:disabled):active{
   transform: scale(.94) !important;
 }
+
+/* ---- prompt input: thin accent border ----------------------------------- */
+form[data-component="prompt-input-v2"]{
+  border: 1.5px solid color-mix(in srgb, var(--color-v2-text-text-accent, #38bdf8) 42%, transparent) !important;
+  transition: border-color .18s ease !important;
+}
+form[data-component="prompt-input-v2"]:focus-within{
+  border-color: color-mix(in srgb, var(--color-v2-text-text-accent, #38bdf8) 75%, transparent) !important;
+}
