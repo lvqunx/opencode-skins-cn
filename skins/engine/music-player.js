@@ -529,6 +529,7 @@
     });
 
     playBtn.addEventListener("click", function () {
+      if (!tracks.length) { setStatus("列表为空 — 点 ⚙ 加载歌单或添加本地音乐"); return; }
       if (audio.paused) playCurrent();
       else { playGeneration += 1; wantsPlayback = false; audio.pause(); }
     });
@@ -554,12 +555,12 @@
     audio.addEventListener("playing", function () {
       wantsPlayback = true;
       root.classList.remove("is-loading"); root.classList.add("is-playing");
-      iconPlay.hidden = true; iconPause.hidden = false;
+      iconPlay.setAttribute("hidden", ""); iconPause.removeAttribute("hidden");
       setStatus("正在播放");
     });
     audio.addEventListener("pause", function () {
       root.classList.remove("is-playing", "is-loading");
-      iconPlay.hidden = false; iconPause.hidden = true;
+      iconPlay.removeAttribute("hidden"); iconPause.setAttribute("hidden", "");
       if (!wantsPlayback && audio.currentTime > 0 && !audio.ended) setStatus("已暂停");
     });
     audio.addEventListener("waiting", function () { if (wantsPlayback) { root.classList.add("is-loading"); setStatus("缓冲中…"); } });

@@ -178,4 +178,18 @@
     extra.src = new URL("__skins__/engine/music-player.js", document.baseURI).href + "?v=" + Date.now();
     document.head.appendChild(extra);
   } catch (e) {}
+
+  // keep native window-control buttons (min/max/close) in sync with the skin's
+  // color scheme — the main process only knows the app's own theme otherwise
+  try {
+    var syncTitlebar = function () {
+      var scheme = document.documentElement.dataset.colorScheme || "";
+      if (scheme !== "dark" && scheme !== "light") return;
+      try {
+        if (window.api && window.api.setTitlebar) window.api.setTitlebar({ mode: scheme, scheme: scheme });
+      } catch (e2) {}
+    };
+    new MutationObserver(syncTitlebar).observe(document.documentElement, { attributes: true, attributeFilter: ["data-color-scheme"] });
+    syncTitlebar();
+  } catch (e) {}
 })();

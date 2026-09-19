@@ -21,4 +21,42 @@
 /* kill any leftover frosted-glass blur from a previous skin */
 [data-oc-glass]{ backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
 
+/* ---- readable chrome over animated backgrounds (no-veil skins) ---------- */
+/* brighter icons so titlebar / dock buttons stay visible */
+html{
+  --icon-base: #c9d6e2 !important;
+  --icon-strong-base: #ffffff !important;
+  --v2-icon-icon-muted: #a9bccf !important;
+  --color-v2-icon-icon-muted: #a9bccf !important;
+  /* brighter secondary text (review panel / context details / lists) */
+  --v2-text-text-muted: #c3d2e0 !important;
+  --v2-text-text-faint: #a5b7c9 !important;
+  --text-base: #ffffffc9 !important;
+  --text-weak: #ffffff9e !important;
+  /* legacy text tokens are keyed on prefers-color-scheme — force dark values */
+  --text-strong: #ffffffef !important;
+  --text-weaker: #ffffff48 !important;
+  --text-interactive-base: #9dbefe !important;
+  /* stronger hover / pressed feedback for ghost buttons */
+  --surface-base-hover: rgba(255,255,255,.10) !important;
+  --surface-base-active: rgba(255,255,255,.16) !important;
+  --surface-raised-base-active: rgba(255,255,255,.18) !important;
+  --color-v2-overlay-simple-overlay-hover: rgba(255,255,255,.10) !important;
+  --color-v2-overlay-simple-overlay-pressed: rgba(255,255,255,.16) !important;
+}
+/* titlebar session tabs keep a subtle chip so they read as buttons */
+[data-titlebar-tab]{
+  --tab-base: rgba(255,255,255,.06) !important;
+  --tab-overlay: transparent !important;
+}
+[data-titlebar-tab]:is(:hover, :has(> [data-slot="tab-link"]:focus-visible)):not([data-state="pressed"]):not([data-dragging="true"]):not([data-editing="true"]){
+  --tab-base: rgba(255,255,255,.12) !important;
+}
+[data-titlebar-tab]:is([data-state="pressed"], [data-dragging="true"], [data-editing="true"]){
+  --tab-base: rgba(255,255,255,.16) !important;
+}
+[data-titlebar-tab-slot][data-active="true"] [data-titlebar-tab]{
+  --tab-base: rgba(255,255,255,.12) !important;
+}
+
 /* text shadow intentionally disabled */
