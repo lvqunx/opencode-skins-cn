@@ -172,6 +172,7 @@
     setTimeout(wait, 100);
   })();
 
+  
   // load sibling add-ons (music player)
   try {
     var extra = document.createElement("script");

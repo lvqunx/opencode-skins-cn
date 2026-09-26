@@ -355,3 +355,93 @@ form[data-component="prompt-input-v2"]{
 form[data-component="prompt-input-v2"]:focus-within{
   border-color: color-mix(in srgb, var(--color-v2-text-text-accent, #38bdf8) 75%, transparent) !important;
 }
+
+/* ===== readability: opaque surfaces for floating layers & masking chrome ===== */
+/* menus, dialogs, popovers, tooltips, toasts, docks, side panels:
+   scope opaque backgrounds so text never overlaps the content behind */
+[data-component="dialog-v2"],
+[data-component="menu-v2-content"],
+[data-component="tooltip-v2"],
+[data-component="popover-content"],
+[data-component="hover-card-content"],
+[data-component="dropdown-menu-content"],
+[data-component="dropdown-menu-sub-content"],
+[data-component="context-menu-content"],
+[data-component="context-menu-sub-content"],
+[data-component="toast"],
+.toast-v2,
+[data-component="dock-prompt"],
+#review-panel,
+#terminal-panel{
+  --color-v2-background-bg-base: #15161d;
+  --color-v2-background-bg-deep: #11121a;
+  --color-v2-background-bg-layer-01: #1a1b24;
+  --color-v2-background-bg-layer-02: #20212c;
+  --color-v2-background-bg-layer-03: #262734;
+  --color-v2-background-bg-layer-04: #2c2d3b;
+  --color-background-base: #15161d;
+  --v2-background-bg-base: #15161d;
+  --v2-background-bg-deep: #11121a;
+  --v2-background-bg-layer-01: #1a1b24;
+  --v2-background-bg-layer-02: #20212c;
+  --v2-background-bg-layer-03: #262734;
+  --v2-background-bg-layer-04: #2c2d3b;
+  --background-base: #15161d;
+  --background-weak: #1a1b24;
+  --background-strong: #12131a;
+  --background-stronger: #17181f;
+}
+
+/* docked side panels get their own surface */
+#review-panel,
+#terminal-panel{
+  background: rgba(17,18,24,.94) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+/* floating layers: soft blur behind */
+[data-component="dialog-v2"] [data-slot="dialog-container"],
+[data-component="menu-v2-content"],
+[data-component="tooltip-v2"]{
+  backdrop-filter: blur(16px) !important;
+}
+
+/* composer keeps a readable surface over scrolled messages */
+form[data-component="prompt-input-v2"]{
+  background: rgba(17,18,25,.9) !important;
+  backdrop-filter: blur(14px) !important;
+}
+
+/* contrast (primary action) buttons: theme accent instead of see-through white */
+[data-component="button-v2"][data-variant="contrast"]:not([data-action="prompt-submit"]),
+[data-component="icon-button-v2"][data-variant="contrast"]:not([data-action="prompt-submit"]){
+  background: var(--color-v2-text-text-accent, #38bdf8) !important;
+  color: #06283b !important;
+  box-shadow: none !important;
+}
+[data-component="button-v2"][data-variant="contrast"]:not([data-action="prompt-submit"]) [data-slot="icon-svg"],
+[data-component="icon-button-v2"][data-variant="contrast"]:not([data-action="prompt-submit"]) [data-slot="icon-svg"]{
+  color: #06283b !important;
+}
+
+/* ===== contrast guarantees: tags, chips, v1 secondary buttons ===== */
+[data-component="tag"]:not([data-variant="accent"]){
+  background-color: #22232c !important;
+  border-color: rgba(255,255,255,.14) !important;
+  color: #c3d2e0 !important;
+}
+[data-component="button"][data-variant="secondary"],
+[data-component="icon-button"][data-variant="secondary"]{
+  background-color: #1f2028 !important;
+  border-color: rgba(255,255,255,.10) !important;
+  color: #ffffffef !important;
+}
+[data-component="button"][data-variant="secondary"]:disabled,
+[data-component="icon-button"][data-variant="secondary"]:disabled{
+  background-color: #23242c !important;
+  color: #ffffff9e !important;
+}
+[data-component="button"][data-variant="secondary"] [data-slot="icon-svg"],
+[data-component="icon-button"][data-variant="secondary"] [data-slot="icon-svg"]{
+  color: #c9d6e2 !important;
+}

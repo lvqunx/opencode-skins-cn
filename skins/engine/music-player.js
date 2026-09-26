@@ -630,4 +630,44 @@
   }
 
   whenBody(init);
+
+  // ---- align the app's OWN color scheme with the active skin (the app regenerates
+  // its full theme - incl. button/state tokens - from this localStorage setting) ----
+  (function () {
+    var KEY = "opencode-color-scheme";
+    function want() {
+      try {
+        var api = window.ocskin;
+        var m = api && api.manifest ? api.manifest() : null;
+        if (api && api.current && api.current() && m) return m.base === "light" ? "light" : "dark";
+      } catch (e) {}
+      return null;
+    }
+    function sync() {
+      var w = want();
+      if (!w) return;
+      var applied = document.documentElement.getAttribute("data-color-scheme") || "";
+      var stored = "";
+      try { stored = localStorage.getItem(KEY) || ""; } catch (e) {}
+      if (stored === w && applied === w) return;
+      try { localStorage.setItem(KEY, w); } catch (e) {}
+      if (applied !== w) {
+        var flag = "ocskin:schemefix";
+        var last = "";
+        try { last = sessionStorage.getItem(flag) || ""; } catch (e) {}
+        if (last !== w) {
+          try { sessionStorage.setItem(flag, w); } catch (e) {}
+          try { console.log("%c[ocskin-tb]", "color:#37e6ff;font-weight:bold", "reload for scheme", w); } catch (e) {}
+          location.reload();
+        }
+      }
+    }
+    setTimeout(sync, 1200);
+    setInterval(sync, 8000);
+    if (window.ocskin && window.ocskin.on) {
+      try { window.ocskin.on("applied", function () { setTimeout(sync, 300); }); } catch (e) {}
+    }
+  })();
+
+
 })();
